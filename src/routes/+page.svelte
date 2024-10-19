@@ -23,11 +23,8 @@
   }) as unknown as Tweened<number>;
 
   onMount(() => {
-    ({ width, height } = mycanvas.getBoundingClientRect());
-    width -= 2 * margin;
-    height -= 2 * margin;
-    blobX.set(rand(margin, margin + width));
-    blobY.set(rand(margin, margin + height));
+    blobX.set(rand(margin, width - 2 * margin));
+    blobY.set(rand(margin, height - 2 * margin));
   });
 
   let clear: number;
@@ -39,10 +36,10 @@
       stepX = randChoice([-step, 0, step]);
       stepY = randChoice([-step, 0, step]);
 
-      blobX.set(trimToRange($blobX + stepX, margin, width - margin), { duration: stepT });
-      blobY.set(trimToRange($blobY + stepY, margin, height - margin), { duration: stepT });
+      blobX.set(trimToRange($blobX + stepX, margin, width - 2 * margin), { duration: stepT });
+      blobY.set(trimToRange($blobY + stepY, margin, height - 2 * margin), { duration: stepT });
     }, stepT);
-  }
+  };
   updateAnim();
 </script>
 
@@ -51,7 +48,7 @@
 <body>
   <div class="welcome"><span class="blink">\></span>Hola!</div>
   <div class="container">
-    <div class="mycanvas" bind:this={mycanvas}>
+    <div class="mycanvas" bind:this={mycanvas} bind:clientWidth={width} bind:clientHeight={height}>
       <div class="blob" style="left: {$blobX}px; top: {$blobY}px;"></div>
     </div>
 
