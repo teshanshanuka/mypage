@@ -31,6 +31,11 @@
     top: 20%;
     border-radius: 20px;
     box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.5);
+    transition: all 0.15s ease-in-out;
+  }
+  .window:hover {
+    box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.5);
+    transform: scale(1.01);
   }
 
   body {
