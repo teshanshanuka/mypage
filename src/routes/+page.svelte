@@ -8,7 +8,7 @@
   const trimToRange = (val: number, min: number, max: number) => Math.max(Math.min(val, max), min);
 
   let svg: SVGSVGElement;
-  let width: number, height: number;
+  let width: number, height: number, prevX: number, prevY: number;
   let blobR = 8;
   let freq = 5;
   let step = 10;
@@ -19,7 +19,7 @@
     duration: 400,
     easing: cubicOut,
   }) as unknown as Tweened<number>;
-  let blobY = tweened(null, {
+  let blobY = tweened(undefined, {
     duration: 400,
     easing: cubicOut,
   }) as unknown as Tweened<number>;
@@ -27,6 +27,9 @@
   onMount(() => {
     blobX.set(rand(blobR, width - 2 * blobR));
     blobY.set(rand(blobR, height - 2 * blobR));
+
+    prevX = $blobX;
+    prevY = $blobY;
     polylnPts = `${$blobX},${$blobY}`;
   });
 
@@ -44,6 +47,8 @@
       blobX.set(trimToRange($blobX + stepX, blobR, width - 2 * blobR), { duration: stepT });
       blobY.set(trimToRange($blobY + stepY, blobR, height - 2 * blobR), { duration: stepT });
 
+      prevX = $blobX;
+      prevY = $blobY;
       polylnPts += `, ${$blobX} ${$blobY}`;
     }, stepT);
   };
@@ -64,6 +69,7 @@
       ></div>
       <svg bind:this={svg} viewBox="0 0 {width} {height}" {width} {height}>
         <polyline points={polylnPts} style="stroke:white;stroke-width:2;stroke-opacity:0.6" />
+        <line x1={prevX} y1={prevY} x2={$blobX} y2={$blobY} style="stroke:white;stroke-width:2" />
       </svg>
     </div>
 
