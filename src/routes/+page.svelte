@@ -13,6 +13,7 @@
   let freq = 5;
   let step = 10;
   let polylnPts = '';
+  let paused = false;
 
   let blobX = tweened(undefined, {
     duration: 400,
@@ -47,6 +48,8 @@
     }, stepT);
   };
   updateAnim();
+
+  $: paused ? clearInterval(clear) : updateAnim();
 </script>
 
 <title>Teshan's stuff</title>
@@ -71,6 +74,7 @@
       <input type="range" min="1" max="100" step="1" bind:value={step} on:input={updateAnim} class="range-slider" />
       <span class="range-text">step: {step}</span>
 
+      <button on:click={() => (paused = !paused)}>{paused ? 'Resume' : 'Pause'}</button>
       <button on:click={() => (polylnPts = `${$blobX},${$blobY}`)} style="align-self: flex-end;">Clear path</button>
     </div>
   </div>
