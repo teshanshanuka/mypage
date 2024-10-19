@@ -54,7 +54,7 @@
 
 <title>Teshan's stuff</title>
 
-<body>
+<main class="main">
   <div class="welcome"><span class="blink">\></span>Hola!</div>
   <div class="container">
     <div class="mycanvas" bind:clientWidth={width} bind:clientHeight={height}>
@@ -78,7 +78,7 @@
       <button on:click={() => (polylnPts = `${$blobX},${$blobY}`)} style="align-self: flex-end;">Clear path</button>
     </div>
   </div>
-</body>
+</main>
 
 <style>
   .welcome {
@@ -187,11 +187,13 @@
     }
   }
 
-  body {
+  .main {
     margin: 0;
     padding: 0;
     border-radius: 5px;
     background: linear-gradient(135deg, #6a11cb, #c608df); /* Blue/Purple gradient */
     font-family: monospace;
+    height: 100vh;
+    overflow: hidden;
   }
 </style>
