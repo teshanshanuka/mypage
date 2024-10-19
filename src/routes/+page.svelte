@@ -7,12 +7,15 @@
   const randChoice = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
   const trimToRange = (val: number, min: number, max: number) => Math.max(Math.min(val, max), min);
 
+  const welcomeMsg = 'Hola!\nwelcome to my page...';
+
   let svg: SVGSVGElement;
   let width: number, height: number, prevX: number, prevY: number;
   let blobR = 8;
   let freq = 5;
   let step = 10;
   let polylnPts = '';
+  let msg = '';
   let paused = false;
 
   let blobX = tweened(undefined, {
@@ -54,13 +57,30 @@
   };
   updateAnim();
 
+  (async () => {
+    const waitRand = () => new Promise(resolve => setTimeout(resolve, rand(10, 200)));
+
+    msg = '›';
+    await waitRand();
+    for (const letter of welcomeMsg) {
+      if (letter === '\n') {
+        msg += '\n›';
+        await waitRand();
+      } else {
+        msg += letter;
+        await waitRand();
+      }
+    }
+    msg += '\n›';
+  })();
+
   $: paused ? clearInterval(clear) : updateAnim();
 </script>
 
 <title>Teshan's stuff</title>
 
 <main class="main">
-  <div class="welcome"><span class="blink">\></span>Hola!</div>
+  <div class="welcome">{msg}<span class="blink">_</span></div>
   <div class="container">
     <div class="mycanvas" bind:clientWidth={width} bind:clientHeight={height}>
       <div
@@ -90,6 +110,8 @@
   .welcome {
     text-align: left;
     font-size: 2.5em;
+    white-space: pre-line;
+    line-height: 1.15em;
   }
 
   .blink {
