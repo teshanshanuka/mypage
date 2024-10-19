@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { tweened, type Tweened } from 'svelte/motion';
-  import { cubicOut } from 'svelte/easing';
+  import { cubicInOut } from 'svelte/easing';
 
   const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min)) + min;
   const randChoice = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
@@ -17,11 +17,11 @@
 
   let blobX = tweened(undefined, {
     duration: 400,
-    easing: cubicOut,
+    easing: cubicInOut,
   }) as unknown as Tweened<number>;
   let blobY = tweened(undefined, {
     duration: 400,
-    easing: cubicOut,
+    easing: cubicInOut,
   }) as unknown as Tweened<number>;
 
   onMount(() => {
