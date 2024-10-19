@@ -89,7 +89,6 @@
 <style>
   .welcome {
     text-align: left;
-    font-family: monospace;
     font-size: 2.5em;
   }
 
@@ -153,7 +152,6 @@
     color: #1b1b1b;
     cursor: pointer;
     display: inline-block;
-    font-family: monospace;
     font-size: 14px;
     margin: 0;
     padding: 10px 12px;
@@ -201,5 +199,6 @@
     font-family: monospace;
     height: 100vh;
     overflow: hidden;
+    font-family: monospace;
   }
 </style>
