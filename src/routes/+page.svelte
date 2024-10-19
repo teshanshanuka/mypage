@@ -7,11 +7,12 @@
   const randChoice = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)];
   const trimToRange = (val: number, min: number, max: number) => Math.max(Math.min(val, max), min);
 
-  let mycanvas: HTMLDivElement;
-  let width: number, height: number, stepX: number, stepY: number;
-  let margin = 10;
+  let svg: SVGSVGElement;
+  let width: number, height: number;
+  let blobR = 8;
   let freq = 5;
   let step = 10;
+  let polylnPts = '';
 
   let blobX = tweened(undefined, {
     duration: 400,
@@ -23,8 +24,9 @@
   }) as unknown as Tweened<number>;
 
   onMount(() => {
-    blobX.set(rand(margin, width - 2 * margin));
-    blobY.set(rand(margin, height - 2 * margin));
+    blobX.set(rand(blobR, width - 2 * blobR));
+    blobY.set(rand(blobR, height - 2 * blobR));
+    polylnPts = `${$blobX},${$blobY}`;
   });
 
   let clear: number;
@@ -33,11 +35,15 @@
     const stepT = (1 / freq) * 1000;
 
     clear = setInterval(() => {
-      stepX = randChoice([-step, 0, step]);
-      stepY = randChoice([-step, 0, step]);
+      if (!$blobX || !$blobY) return;
 
-      blobX.set(trimToRange($blobX + stepX, margin, width - 2 * margin), { duration: stepT });
-      blobY.set(trimToRange($blobY + stepY, margin, height - 2 * margin), { duration: stepT });
+      const stepX = randChoice([-step, 0, step]);
+      const stepY = randChoice([-step, 0, step]);
+
+      blobX.set(trimToRange($blobX + stepX, blobR, width - 2 * blobR), { duration: stepT });
+      blobY.set(trimToRange($blobY + stepY, blobR, height - 2 * blobR), { duration: stepT });
+
+      polylnPts += `, ${$blobX} ${$blobY}`;
     }, stepT);
   };
   updateAnim();
@@ -48,15 +54,24 @@
 <body>
   <div class="welcome"><span class="blink">\></span>Hola!</div>
   <div class="container">
-    <div class="mycanvas" bind:this={mycanvas} bind:clientWidth={width} bind:clientHeight={height}>
-      <div class="blob" style="left: {$blobX}px; top: {$blobY}px;"></div>
+    <div class="mycanvas" bind:clientWidth={width} bind:clientHeight={height}>
+      <div
+        class="blob"
+        style="left: {$blobX - blobR}px; top: {$blobY - blobR}px; width: {blobR * 2}px; height: {blobR * 2}px"
+      ></div>
+      <svg bind:this={svg} viewBox="0 0 {width} {height}" {width} {height}>
+        <polyline points={polylnPts} style="stroke:white;stroke-width:2;stroke-opacity:0.6" />
+      </svg>
     </div>
 
     <div class="range-container">
       <input type="range" min="0.1" max="50" step="0.1" bind:value={freq} on:input={updateAnim} class="range-slider" />
       <span class="range-text">{freq}Hz</span>
+
       <input type="range" min="1" max="100" step="1" bind:value={step} on:input={updateAnim} class="range-slider" />
       <span class="range-text">step: {step}</span>
+
+      <button on:click={() => (polylnPts = `${$blobX},${$blobY}`)} style="align-self: flex-end;">Clear path</button>
     </div>
   </div>
 </body>
@@ -121,12 +136,51 @@
     margin-right: 20px;
   }
 
+  button {
+    background-color: rgba(219, 219, 219, 0.24);
+    border-radius: 8px;
+    border-width: 0;
+    color: #1b1b1b;
+    cursor: pointer;
+    display: inline-block;
+    font-family: monospace;
+    font-size: 14px;
+    margin: 0;
+    padding: 10px 12px;
+    text-align: center;
+    vertical-align: baseline;
+    margin: 0 10px 0 0;
+  }
+
   .blob {
-    width: 20px;
-    height: 20px;
     border-radius: 50%;
     background-color: white;
     position: absolute;
+    animation: pulse 0.3s infinite; /* Add animation */
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow:
+        0 0 5px white,
+        0 0 10px white,
+        0 0 15px white;
+      transform: scale(1);
+    }
+    50% {
+      box-shadow:
+        0 0 2px white,
+        0 0 5px white,
+        0 0 10px white;
+      transform: scale(1.1);
+    }
+    100% {
+      box-shadow:
+        0 0 5px white,
+        0 0 10px white,
+        0 0 15px white;
+      transform: scale(1);
+    }
   }
 
   body {
